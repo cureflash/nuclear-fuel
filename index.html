@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f5f5f2">
   <title>核燃料取扱主任者 4択トレ</title>
-  <link rel="stylesheet" href="./styles.css?v=20260913-v1">
+  <link rel="stylesheet" href="./styles.css?v=20260913-v2">
 </head>
 <body>
   <main class="app-shell">
@@ -16,6 +16,19 @@
     </header>
 
     <section data-view="home">
+      <div class="coverage-card">
+        <strong data-role="coverage">作問範囲を確認中です。</strong>
+        <p class="small">完了済みトピックだけを出題します。未完了トピックは完成後に自動で追加されます。</p>
+      </div>
+
+      <h2>出題数</h2>
+      <div class="count-grid" data-role="count-selector">
+        <button type="button" data-count="10" aria-pressed="false">10問</button>
+        <button type="button" data-count="30" aria-pressed="true">30問</button>
+        <button type="button" data-count="all" aria-pressed="false">全問</button>
+      </div>
+      <p class="small">「全問」は、選んだ分野にある現在の検証済み問題をすべて出題します。</p>
+
       <h2>分野</h2>
       <div class="mode-grid" data-role="categories"></div>
       <div class="mode-grid mixed-grid">
@@ -42,6 +55,6 @@
       <button type="button" data-action="home">分野選択へ戻る</button>
     </section>
   </main>
-  <script type="module" src="./app.js?v=20260913-v1"></script>
+  <script type="module" src="./app.js?v=20260913-v2"></script>
 </body>
 </html>
