@@ -1,0 +1,17 @@
+*{box-sizing:border-box}
+:root{color-scheme:light;--bg:#f5f5f2;--card:#fff;--text:#202020;--muted:#666;--line:#b7b7b0;--good:#16794a;--good-bg:#edf8f2;--bad:#b3261e;--bad-bg:#fff0ee}
+body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+button{font:inherit;color:inherit}
+.app-shell{max-width:760px;margin:0 auto;padding:24px 16px 56px}
+header{margin-bottom:28px}.eyebrow{font-size:.85rem;letter-spacing:.12em}.small{color:#5b5b5b;line-height:1.6;font-size:.9rem}.error{color:var(--bad);white-space:pre-wrap}
+.mode-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.mixed-grid{margin-top:12px}
+.mode-grid button,.choice,.next,[data-action="home"],.quiet{min-height:52px;border:1px solid var(--line);border-radius:12px;background:var(--card);cursor:pointer}
+.mode-grid button{padding:12px}.mode-grid button:disabled{opacity:.45;cursor:default}
+.quiz-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.quiet{min-height:40px;padding:8px 12px}.progress{margin:12px 0;color:var(--muted);text-align:right}
+.prompt{margin:24px 0;padding:20px;border:1px solid #d7d7d0;border-radius:14px;background:var(--card);font-size:1.1rem;line-height:1.75;white-space:pre-wrap}
+.question-meta{display:block;margin-bottom:8px;color:var(--muted);font-size:.82rem;letter-spacing:.03em}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}.choice{padding:14px;text-align:left;display:flex;align-items:flex-start;gap:10px;line-height:1.55}.choice-letter{display:inline-grid;place-items:center;min-width:28px;height:28px;border:1px solid #aaa;border-radius:50%;font-weight:700}.choice-text{flex:1}
+.choice[data-state="correct"]{border-color:var(--good);outline:2px solid var(--good);background:var(--good-bg)}.choice[data-state="wrong"]{border-color:var(--bad);outline:2px solid var(--bad);background:var(--bad-bg)}.choice:disabled{cursor:default}
+.explanation{margin-top:18px}.answer-card{padding:18px;border:2px solid #202020;border-radius:14px;background:var(--card);line-height:1.7}.answer-title{margin:0 0 10px;font-size:1.25rem}.answer-title.correct{color:var(--good)}.answer-title.wrong{color:var(--bad)}.answer-correct{font-weight:700}.answer-detail{white-space:pre-wrap}.answer-sources{padding-left:1.4rem;margin-bottom:0}.answer-sources a{word-break:break-all}
+.next{width:100%;margin-top:16px}.result-score{font-size:1.35rem;font-weight:700}
+@media(max-width:520px){.app-shell{padding:18px 12px 40px}.choices{grid-template-columns:1fr}.prompt{padding:16px}.choice{padding:13px}.quiz-head{align-items:flex-start;flex-direction:column}.progress{text-align:left;margin:0}}
