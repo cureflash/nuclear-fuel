@@ -4,6 +4,8 @@ body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",
 button{font:inherit;color:inherit}
 .app-shell{max-width:760px;margin:0 auto;padding:24px 16px 56px}
 header{margin-bottom:28px}.eyebrow{font-size:.85rem;letter-spacing:.12em}.small{color:#5b5b5b;line-height:1.6;font-size:.9rem}.error{color:var(--bad);white-space:pre-wrap}
+.coverage-card{margin-bottom:24px;padding:16px;border:1px solid #d7d7d0;border-radius:14px;background:var(--card)}.coverage-card strong{display:block;font-size:1.05rem}.coverage-card p{margin:.5rem 0 0}
+.count-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px}.count-grid button{min-height:46px;border:1px solid var(--line);border-radius:12px;background:var(--card);cursor:pointer}.count-grid button[data-selected="true"]{outline:2px solid #202020;font-weight:700}
 .mode-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.mixed-grid{margin-top:12px}
 .mode-grid button,.choice,.next,[data-action="home"],.quiet{min-height:52px;border:1px solid var(--line);border-radius:12px;background:var(--card);cursor:pointer}
 .mode-grid button{padding:12px}.mode-grid button:disabled{opacity:.45;cursor:default}
@@ -14,4 +16,4 @@ header{margin-bottom:28px}.eyebrow{font-size:.85rem;letter-spacing:.12em}.small{
 .choice[data-state="correct"]{border-color:var(--good);outline:2px solid var(--good);background:var(--good-bg)}.choice[data-state="wrong"]{border-color:var(--bad);outline:2px solid var(--bad);background:var(--bad-bg)}.choice:disabled{cursor:default}
 .explanation{margin-top:18px}.answer-card{padding:18px;border:2px solid #202020;border-radius:14px;background:var(--card);line-height:1.7}.answer-title{margin:0 0 10px;font-size:1.25rem}.answer-title.correct{color:var(--good)}.answer-title.wrong{color:var(--bad)}.answer-correct{font-weight:700}.answer-detail{white-space:pre-wrap}.answer-sources{padding-left:1.4rem;margin-bottom:0}.answer-sources a{word-break:break-all}
 .next{width:100%;margin-top:16px}.result-score{font-size:1.35rem;font-weight:700}
-@media(max-width:520px){.app-shell{padding:18px 12px 40px}.choices{grid-template-columns:1fr}.prompt{padding:16px}.choice{padding:13px}.quiz-head{align-items:flex-start;flex-direction:column}.progress{text-align:left;margin:0}}
+@media(max-width:520px){.app-shell{padding:18px 12px 40px}.count-grid{grid-template-columns:1fr}.choices{grid-template-columns:1fr}.prompt{padding:16px}.choice{padding:13px}.quiz-head{align-items:flex-start;flex-direction:column}.progress{text-align:left;margin:0}}
