@@ -2,6 +2,6 @@
 
 担当: DET + WST + CAL/DES
 
-- next_topic_id: CAL-05
-- completed: DET-01, DET-02, DET-03, DET-04, DET-05, DET-06, DET-07, DET-08, DET-09, DET-10, DET-11, DET-12, WST-01, WST-02, WST-03, WST-04, WST-05, WST-06, WST-07, WST-08, WST-09, WST-10, CAL-01, CAL-02, CAL-03, CAL-04
-- current: CAL-04 完了（24問、24/24 verified、正答位置 A/B/C/D 各6問）
+- next_topic_id: CAL-06
+- completed: DET-01, DET-02, DET-03, DET-04, DET-05, DET-06, DET-07, DET-08, DET-09, DET-10, DET-11, DET-12, WST-01, WST-02, WST-03, WST-04, WST-05, WST-06, WST-07, WST-08, WST-09, WST-10, CAL-01, CAL-02, CAL-03, CAL-04, CAL-05
+- current: CAL-05 完了（24問、24/24 verified、正答位置 A/B/C/D 各6問）
