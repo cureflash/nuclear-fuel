@@ -1,5 +1,4 @@
 const STATUS_FILES = [1,2,3,4,5].map((n)=>`./status/worker-${n}.md`);
-const TOTAL_TOPICS = 117;
 const CATEGORY_LABELS = Object.freeze({
   LAW:'法令', NUC:'核種・元素・核燃料物性', MAT:'燃料・材料', CYC:'核燃料サイクル',
   SAF:'臨界安全・施設安全', ACC:'事故・化学安全', RADL:'放射線防護・法定数値',
@@ -9,7 +8,6 @@ const CATEGORY_LABELS = Object.freeze({
 const LETTERS=['A','B','C','D'];
 const categoryView=document.querySelector('[data-role="categories"]');
 const bankStatus=document.querySelector('[data-role="bank-status"]');
-const coverageEl=document.querySelector('[data-role="coverage"]');
 const loadError=document.querySelector('[data-role="load-error"]');
 const mixedButton=document.querySelector('[data-category="mixed"]');
 const countButtons=[...document.querySelectorAll('[data-count]')];
@@ -92,7 +90,6 @@ function renderCategoryButtons(){
 
 function updateCountButtons(){for(const button of countButtons){const active=button.dataset.count===selectedCount;button.setAttribute('aria-pressed',String(active));button.dataset.selected=active?'true':'false'}}
 function resolvedCount(total){if(selectedCount==='all')return total;const requested=Number(selectedCount);return Number.isFinite(requested)?Math.min(requested,total):Math.min(30,total)}
-function coverageText(){const percent=(completedTopics.length/TOTAL_TOPICS*100).toFixed(1);return `作問範囲 ${completedTopics.length} / ${TOTAL_TOPICS}トピック完了（${percent}%）`}
 
 async function startCategory(prefix){
   setLoading(true,`${CATEGORY_LABELS[prefix]||prefix}を読み込み中です。`);
@@ -128,7 +125,7 @@ function setLoading(loading,message=''){for(const button of categoryView.querySe
 function showError(error){loadError.textContent=error instanceof Error?error.message:String(error);loadError.hidden=false}
 
 async function boot(){
-  try{const statuses=await Promise.all(STATUS_FILES.map(fetchText));completedTopics=[...new Set(statuses.flatMap(parseCompleted))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));if(!completedTopics.length)throw new Error('完了topicが見つかりません。');renderCategoryButtons();coverageEl.textContent=coverageText();bankStatus.textContent=`完了済み ${completedTopics.length}トピックの検証済み問題を出題します。`;loadError.hidden=true}catch(error){coverageEl.textContent='作問範囲を取得できませんでした。';bankStatus.textContent='問題データを読み込めませんでした。';showError(error)}
+  try{const statuses=await Promise.all(STATUS_FILES.map(fetchText));completedTopics=[...new Set(statuses.flatMap(parseCompleted))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));if(!completedTopics.length)throw new Error('完了topicが見つかりません。');renderCategoryButtons();bankStatus.textContent=`完了済み ${completedTopics.length}トピックの検証済み問題を出題します。`;loadError.hidden=true}catch(error){bankStatus.textContent='問題データを読み込めませんでした。';showError(error)}
 }
 
 for(const button of countButtons){button.addEventListener('click',()=>{selectedCount=button.dataset.count;updateCountButtons()})}
