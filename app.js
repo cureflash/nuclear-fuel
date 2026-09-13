@@ -1,4 +1,5 @@
 const STATUS_FILES = [1,2,3,4,5].map((n)=>`./status/worker-${n}.md`);
+const TOTAL_TOPICS = 117;
 const CATEGORY_LABELS = Object.freeze({
   LAW:'法令', NUC:'核種・元素・核燃料物性', MAT:'燃料・材料', CYC:'核燃料サイクル',
   SAF:'臨界安全・施設安全', ACC:'事故・化学安全', RADL:'放射線防護・法定数値',
@@ -8,8 +9,10 @@ const CATEGORY_LABELS = Object.freeze({
 const LETTERS=['A','B','C','D'];
 const categoryView=document.querySelector('[data-role="categories"]');
 const bankStatus=document.querySelector('[data-role="bank-status"]');
+const coverageEl=document.querySelector('[data-role="coverage"]');
 const loadError=document.querySelector('[data-role="load-error"]');
 const mixedButton=document.querySelector('[data-category="mixed"]');
+const countButtons=[...document.querySelectorAll('[data-count]')];
 const homeView=document.querySelector('[data-view="home"]');
 const quizView=document.querySelector('[data-view="quiz"]');
 const resultView=document.querySelector('[data-view="result"]');
@@ -21,6 +24,7 @@ const nextButton=document.querySelector('[data-action="next"]');
 const resultEl=document.querySelector('[data-role="result"]');
 
 let completedTopics=[];
+let selectedCount='30';
 const categoryCache=new Map();
 let session=null;
 
@@ -82,26 +86,30 @@ async function loadAll(){const prefixes=[...new Set(completedTopics.map((id)=>id
 function renderCategoryButtons(){
   categoryView.replaceChildren();
   const counts=new Map();for(const id of completedTopics){const prefix=id.split('-')[0];counts.set(prefix,(counts.get(prefix)||0)+1)}
-  for(const [prefix,count] of counts){const button=document.createElement('button');button.type='button';button.textContent=`${CATEGORY_LABELS[prefix]||prefix}（${count}分野）`;button.addEventListener('click',()=>startCategory(prefix));categoryView.append(button)}
+  for(const [prefix,count] of counts){const button=document.createElement('button');button.type='button';button.textContent=`${CATEGORY_LABELS[prefix]||prefix}（${count}トピック）`;button.addEventListener('click',()=>startCategory(prefix));categoryView.append(button)}
   mixedButton.disabled=completedTopics.length===0;
 }
 
+function updateCountButtons(){for(const button of countButtons){const active=button.dataset.count===selectedCount;button.setAttribute('aria-pressed',String(active));button.dataset.selected=active?'true':'false'}}
+function resolvedCount(total){if(selectedCount==='all')return total;const requested=Number(selectedCount);return Number.isFinite(requested)?Math.min(requested,total):Math.min(30,total)}
+function coverageText(){const percent=(completedTopics.length/TOTAL_TOPICS*100).toFixed(1);return `作問範囲 ${completedTopics.length} / ${TOTAL_TOPICS}トピック完了（${percent}%）`}
+
 async function startCategory(prefix){
   setLoading(true,`${CATEGORY_LABELS[prefix]||prefix}を読み込み中です。`);
-  try{const questions=await loadCategory(prefix);startSession(questions,8,CATEGORY_LABELS[prefix]||prefix)}catch(error){showError(error)}finally{setLoading(false)}
+  try{const questions=await loadCategory(prefix);bankStatus.textContent=`${CATEGORY_LABELS[prefix]||prefix}：検証済み ${questions.length}問。`;startSession(questions,CATEGORY_LABELS[prefix]||prefix)}catch(error){showError(error)}finally{setLoading(false)}
 }
 async function startMixed(){
   setLoading(true,'全分野を読み込み中です。');
-  try{const questions=await loadAll();startSession(questions,10,'全分野ミックス')}catch(error){showError(error)}finally{setLoading(false)}
+  try{const questions=await loadAll();bankStatus.textContent=`全分野：検証済み ${questions.length}問。`;startSession(questions,'全分野ミックス')}catch(error){showError(error)}finally{setLoading(false)}
 }
-function startSession(questions,count,label){
+function startSession(questions,label){
   if(!questions.length)throw new Error('出題できる検証済み問題がありません。');
-  const picked=shuffle(questions).slice(0,Math.min(count,questions.length));
-  session={questions:picked,index:0,correct:0,answered:0,label,locked:false};show(quizView);renderQuestion();
+  const count=resolvedCount(questions.length);const picked=shuffle(questions).slice(0,count);
+  session={questions:picked,index:0,correct:0,answered:0,label,locked:false,bankTotal:questions.length};show(quizView);renderQuestion();
 }
 function renderQuestion(){
   const question=session.questions[session.index];if(!question)return finish();session.locked=false;
-  progressEl.textContent=`${session.label}　${session.index+1} / ${session.questions.length}`;
+  progressEl.textContent=`${session.label}　${session.index+1} / ${session.questions.length}（バンク ${session.bankTotal}問）`;
   promptEl.replaceChildren();const meta=document.createElement('span');meta.className='question-meta';meta.textContent=`${question.topicId} / ${question.topicLabel}`;const text=document.createElement('span');text.textContent=question.sentence;promptEl.append(meta,text);
   choicesEl.replaceChildren();question.choices.forEach((choice,index)=>{const button=document.createElement('button');button.type='button';button.className='choice';button.dataset.index=String(index);const letter=document.createElement('span');letter.className='choice-letter';letter.textContent=LETTERS[index];const body=document.createElement('span');body.className='choice-text';body.textContent=choice;button.append(letter,body);button.addEventListener('click',()=>submit(index));choicesEl.append(button)});
   explanationEl.hidden=true;explanationEl.replaceChildren();nextButton.hidden=true;
@@ -120,8 +128,9 @@ function setLoading(loading,message=''){for(const button of categoryView.querySe
 function showError(error){loadError.textContent=error instanceof Error?error.message:String(error);loadError.hidden=false}
 
 async function boot(){
-  try{const statuses=await Promise.all(STATUS_FILES.map(fetchText));completedTopics=[...new Set(statuses.flatMap(parseCompleted))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));if(!completedTopics.length)throw new Error('完了topicが見つかりません。');renderCategoryButtons();bankStatus.textContent=`完了済み ${completedTopics.length}分野。選んだ分野の検証済み問題だけを出題します。`;loadError.hidden=true}catch(error){bankStatus.textContent='問題データを読み込めませんでした。';showError(error)}
+  try{const statuses=await Promise.all(STATUS_FILES.map(fetchText));completedTopics=[...new Set(statuses.flatMap(parseCompleted))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));if(!completedTopics.length)throw new Error('完了topicが見つかりません。');renderCategoryButtons();coverageEl.textContent=coverageText();bankStatus.textContent=`完了済み ${completedTopics.length}トピックの検証済み問題を出題します。`;loadError.hidden=true}catch(error){coverageEl.textContent='作問範囲を取得できませんでした。';bankStatus.textContent='問題データを読み込めませんでした。';showError(error)}
 }
 
+for(const button of countButtons){button.addEventListener('click',()=>{selectedCount=button.dataset.count;updateCountButtons()})}
 mixedButton.addEventListener('click',startMixed);nextButton.addEventListener('click',next);document.querySelector('[data-action="home"]').addEventListener('click',()=>show(homeView));document.querySelector('[data-action="quit"]').addEventListener('click',()=>show(homeView));
-show(homeView);await boot();
+updateCountButtons();show(homeView);await boot();
